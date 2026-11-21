@@ -1017,4 +1017,14 @@ if(BUILD_PROGRAMS)
 
   add_executable(test-encode-decode ${test_encode_decode_SOURCES})
   target_link_libraries(test-encode-decode PRIVATE fdk-aac)
+
+  ## Acceptance tests for HE-AACv2 parametric stereo decoding
+  add_executable(test-ps-decoding test-ps-decoding.cpp)
+  target_link_libraries(test-ps-decoding PRIVATE fdk-aac)
+  target_include_directories(test-ps-decoding PRIVATE
+    cpp
+    cpp/libSBRdec/src
+    cpp/libSBRdec/include
+    cpp/libFDK/include
+    cpp/libSYS/include)
 endif()

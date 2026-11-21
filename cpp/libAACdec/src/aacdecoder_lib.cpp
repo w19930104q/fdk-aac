@@ -1560,6 +1560,17 @@ LINKSPEC_CPP AAC_DECODER_ERROR aacDecoder_DecodeFrame(HANDLE_AACDECODER self,
           ErrorStatus = AAC_DEC_OUTPUT_BUFFER_TOO_SMALL;
           goto bail;
         }
+        if (sbrError != SBRDEC_OK) {
+          /* The output channel account is determined by the bitstream
+             configuration only: for a PS configured stream the SBR decoder
+             always produces a stereo signal. A failing SBR module must not
+             silently emit a frame with the core coder channel layout,
+             because that would make the output channel count fluctuate
+             between frames. Signal a frame error instead; the output of
+             this frame is not valid. */
+          ErrorStatus = AAC_DEC_DECODE_FRAME_ERROR;
+          goto bail;
+        }
       }
 
       if (self->mpsEnableCurr) {

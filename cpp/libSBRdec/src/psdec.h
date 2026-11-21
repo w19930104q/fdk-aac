@@ -321,6 +321,10 @@ void PreparePsProcessing(HANDLE_PS_DEC h_ps_d,
 
 void initSlotBasedRotation(HANDLE_PS_DEC h_ps_d, int env, int usb);
 
+void applySlotBasedRotation(HANDLE_PS_DEC h_ps_d, FIXP_DBL *mHybridRealLeft,
+                            FIXP_DBL *mHybridImagLeft, FIXP_DBL *mHybridRealRight,
+                            FIXP_DBL *mHybridImagRight);
+
 void ApplyPsSlot(
     HANDLE_PS_DEC h_ps_d,      /* parametric stereo decoder handle    */
     FIXP_DBL **rIntBufferLeft, /* real values of left qmf timeslot    */

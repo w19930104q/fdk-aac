@@ -358,17 +358,30 @@ void initSlotBasedRotation(
 
     /* ScaleR and ScaleL are scaled by 1 shift right */
 
-    ScaleR = PScaleFactors[noIidSteps + h_ps_d->specificTo.mpeg.pCoef
-                                            ->aaIidIndexMapped[env][bin]];
-    ScaleL = PScaleFactors[noIidSteps - h_ps_d->specificTo.mpeg.pCoef
-                                            ->aaIidIndexMapped[env][bin]];
+    {
+      /* Sanitize the IID/ICC parameter indices before they address the
+         dequantization tables. The indices are limited to the valid ranges
+         during delta decoding already (see deltaDecodeArray() in
+         psbitdec.cpp), but parameter sets that are reused across frames
+         (error concealment, noEnv == 0 handling) are not re-validated against
+         a possibly changed IID quantization grid. Clamp the indices here so
+         that even out-of-range input can neither address the tables out of
+         bounds nor produce mixing coefficients that exceed the representable
+         fixed-point range. */
+      INT iidIndex =
+          (INT)h_ps_d->specificTo.mpeg.pCoef->aaIidIndexMapped[env][bin];
+      INT iccIndex =
+          (INT)h_ps_d->specificTo.mpeg.pCoef->aaIccIndexMapped[env][bin];
 
-    Beta = fMult(
-        fMult(Alphas[h_ps_d->specificTo.mpeg.pCoef->aaIccIndexMapped[env][bin]],
-              (ScaleR - ScaleL)),
-        FIXP_SQRT05);
-    Alpha =
-        Alphas[h_ps_d->specificTo.mpeg.pCoef->aaIccIndexMapped[env][bin]] >> 1;
+      iidIndex = fMax(-noIidSteps, fMin(noIidSteps, iidIndex));
+      iccIndex = fMax((INT)0, fMin((INT)(NO_ICC_STEPS - 1), iccIndex));
+
+      ScaleR = PScaleFactors[noIidSteps + iidIndex];
+      ScaleL = PScaleFactors[noIidSteps - iidIndex];
+
+      Beta = fMult(fMult(Alphas[iccIndex], (ScaleR - ScaleL)), FIXP_SQRT05);
+      Alpha = Alphas[iccIndex] >> 1;
+    }
 
     /* Alpha and Beta are now both scaled by 2 shifts right */
 
@@ -430,7 +443,45 @@ static const UCHAR groupTable[NO_IID_GROUPS + 1] = {
     0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11,
     12, 13, 14, 15, 16, 18, 21, 25, 30, 42, 71};
 
-static void applySlotBasedRotation(
+/***************************************************************************/
+/*!
+  \brief  Accumulate the two products of the PS mixing matrix with the
+          (sub-)subband samples and saturate the result to the representable
+          FIXP_DBL range.
+
+          The plain fMultAdd() accumulation wraps around on overflow which
+          turns into heavy clipping artifacts in the output signal. With
+          sanitized IID/ICC dequantization indices the mixing coefficients
+          are bounded by the dequantization tables, but the (decorrelated)
+          subband samples may still transiently reach full scale. Saturating
+          the sum guarantees that the mixed output always stays within
+          [-1, 1) in the fixed-point domain, i.e. it can never clip by
+          wrap-around.
+
+  \return saturated result of 2 * ((a*b)/2 + (c*d)/2) in the FIXP_DBL domain,
+          i.e. bit-exact with fMultAdd(fMultDiv2(a, b), c, d) as long as the
+          sum does not overflow
+
+****************************************************************************/
+FDK_INLINE FIXP_DBL fMultAddSaturatePs(FIXP_DBL a, FIXP_DBL b, FIXP_DBL c,
+                                       FIXP_DBL d) {
+  /* Reproduce the exact rounding of fMultAdd(fMultDiv2(a, b), c, d): both
+     products are halved (and rounded) first, then summed and shifted back
+     up. The widened accumulator only differs from the plain 32-bit code
+     when the sum overflows, in which case the result is saturated instead
+     of wrapping around. */
+  INT64 acc = ((INT64)fMultDiv2(a, b) + (INT64)fMultDiv2(c, d)) << 1;
+
+  if (acc > (INT64)MAXVAL_DBL) {
+    return (FIXP_DBL)MAXVAL_DBL;
+  }
+  if (acc < (INT64)(LONG)MINVAL_DBL) {
+    return (FIXP_DBL)MINVAL_DBL;
+  }
+  return (FIXP_DBL)acc;
+}
+
+void applySlotBasedRotation(
     HANDLE_PS_DEC h_ps_d, /*!< pointer to the module state */
 
     FIXP_DBL *mHybridRealLeft, /*!< hybrid values real left  */
@@ -515,21 +566,21 @@ static void applySlotBasedRotation(
     const int start = groupTable[group];
     const int stop = groupTable[group + 1];
     for (subband = start; subband < stop; subband++) {
-      FIXP_DBL tmpLeft =
-          fMultAdd(fMultDiv2(pCoef->H11r[group], mHybridRealLeft[subband]),
-                   pCoef->H21r[group], mHybridRealRight[subband]);
-      FIXP_DBL tmpRight =
-          fMultAdd(fMultDiv2(pCoef->H12r[group], mHybridRealLeft[subband]),
-                   pCoef->H22r[group], mHybridRealRight[subband]);
+      FIXP_DBL tmpLeft = fMultAddSaturatePs(
+          pCoef->H11r[group], mHybridRealLeft[subband], pCoef->H21r[group],
+          mHybridRealRight[subband]);
+      FIXP_DBL tmpRight = fMultAddSaturatePs(
+          pCoef->H12r[group], mHybridRealLeft[subband], pCoef->H22r[group],
+          mHybridRealRight[subband]);
       mHybridRealLeft[subband] = tmpLeft;
       mHybridRealRight[subband] = tmpRight;
 
-      tmpLeft =
-          fMultAdd(fMultDiv2(pCoef->H11r[group], mHybridImagLeft[subband]),
-                   pCoef->H21r[group], mHybridImagRight[subband]);
-      tmpRight =
-          fMultAdd(fMultDiv2(pCoef->H12r[group], mHybridImagLeft[subband]),
-                   pCoef->H22r[group], mHybridImagRight[subband]);
+      tmpLeft = fMultAddSaturatePs(pCoef->H11r[group],
+                                   mHybridImagLeft[subband], pCoef->H21r[group],
+                                   mHybridImagRight[subband]);
+      tmpRight = fMultAddSaturatePs(pCoef->H12r[group],
+                                    mHybridImagLeft[subband], pCoef->H22r[group],
+                                    mHybridImagRight[subband]);
       mHybridImagLeft[subband] = tmpLeft;
       mHybridImagRight[subband] = tmpRight;
     } /* subband */
