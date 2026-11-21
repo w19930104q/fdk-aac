@@ -1017,4 +1017,8 @@ if(BUILD_PROGRAMS)
 
   add_executable(test-encode-decode ${test_encode_decode_SOURCES})
   target_link_libraries(test-encode-decode PRIVATE fdk-aac)
+
+  ## Tool for testing the encoder delay/trim contract
+  add_executable(test-delay test-delay.c)
+  target_link_libraries(test-delay PRIVATE fdk-aac $<$<BOOL:${HAVE_LIBM}>:m>)
 endif()

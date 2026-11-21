@@ -1083,7 +1083,16 @@ typedef struct {
 
   UINT nDelay; /*!< Codec delay in PCM samples/channel. Depends on framelength
                   and AOT. Does not include framing delay for filling up encoder
-                  PCM input buffer. */
+                  PCM input buffer.
+
+                  Unified trimming semantics, identical for all audio object
+                  types (AAC-LC, HE-AAC, AAC-LD, AAC-ELD): to align the decoded
+                  output with the encoder input timeline, discard exactly
+                  nDelay leading PCM samples per channel from the decoded
+                  stream. After this trim, the first remaining decoded sample
+                  corresponds to the first sample fed into the encoder, with
+                  an error of at most one frame. The value is deterministic
+                  for a given encoder configuration. */
 
   UINT nDelayCore; /*!< Codec delay in PCM samples/channel, w/o delay caused by
                       the decoder SBR module. This delay is needed to correctly
@@ -1091,7 +1100,13 @@ typedef struct {
                       know how much delay is introdcued by SBR, since it may not
                       know if SBR is active at all (implicit signaling),
                       therefore the decoder must take into account any delay
-                      caused by the SBR module. */
+                      caused by the SBR module.
+
+                      Use nDelay, not nDelayCore, as the trim offset when the
+                      decoder applies the SBR (or MPS) delay itself, which is
+                      the case for this library's decoder. nDelayCore follows
+                      the same unified semantics as nDelay, just without the
+                      decoder-side SBR/MPS contribution. */
 
   UCHAR confBuf[64]; /*!< Configuration buffer in binary format as an
                         AudioSpecificConfig or StreamMuxConfig according to the
