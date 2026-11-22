@@ -134,7 +134,10 @@ amm-info@iis.fraunhofer.de
 #define ENCCONFIG_MILLISECONDS_IN_A_SECOND (1000)
 #define ENCCONFIG_DEFAULT_DRC_TARGET_LOUDNESS_RANGE (10.0f)
 #define ENCCONFIG_MAX_DRC_SEQUENCES (4)
-#define ENCCONFIG_BITRATE_RESTRICTION_FACTOR (2000)
+/* CBR bitrates are accepted in 1 kbit/s steps. The configuration tables
+ * still constrain every accepted rate to a documented range, so sub-1 kbit/s
+ * values and rates below the lowest table row remain rejected. */
+#define ENCCONFIG_BITRATE_RESTRICTION_FACTOR (1000)
 
 typedef struct encconfig_private_data_struct {
   int nSize;

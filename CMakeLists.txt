@@ -1017,4 +1017,9 @@ if(BUILD_PROGRAMS)
 
   add_executable(test-encode-decode ${test_encode_decode_SOURCES})
   target_link_libraries(test-encode-decode PRIVATE fdk-aac)
+
+  ## Probe for documented error codes on unsupported xHE-AAC open requests
+  add_executable(xhe-low-bitrate-errors test/xhe-low-bitrate-errors.c)
+  target_link_libraries(xhe-low-bitrate-errors PRIVATE fdk-xhe-aac)
+  target_include_directories(xhe-low-bitrate-errors PRIVATE xhe-aac)
 endif()

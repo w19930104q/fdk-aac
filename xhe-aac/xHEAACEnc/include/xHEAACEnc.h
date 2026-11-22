@@ -561,7 +561,14 @@ typedef enum {
 
   /** Bit rate
    *  - Type: (IIS_XHEAACENC_PARAM_INT)
-   *  - Value: int (bps - integer multiple of 2000)
+   *  - Value: int (bps - integer multiple of 1000). The accepted range
+   *    additionally depends on AOT, channel configuration and transport
+   *    format; unsupported values are rejected with
+   *    IIS_XHEAACENC_ERROR_PARAM_BITRATE or
+   *    IIS_XHEAACENC_ERROR_PARAMCOMB_BASE. In CBR mode the validated lowest
+   *    operating rates are 6 kbit/s mono and 12 kbit/s stereo. Configuration
+   *    rows exist as low as 4 kbit/s mono, but such extreme rates may be
+   *    rejected at runtime with a documented error code for some content.
    *  - Access: read-write
    */
   IIS_XHEAACENC_PARAMETER_BITRATE = 30,

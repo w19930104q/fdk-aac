@@ -3,7 +3,7 @@
 This is the Extended High Efficiency AAC encoder integrated into AOSP framework based on the Android version android-16.0.0_r2.
 The new MediaCodec C2 component (c2.android.xheaac.encoder) and its mime type MEDIA_MIMETYPE_AUDIO_AAC_XHE link to the new Extended High Efficiency AAC encoder code from Fraunhofer; registered as libcodec2_soft_xheaacenc.
 
-The Extended High Efficiency AAC codec is part of the fourth codec generation in the AAC codec family. It provides improved quality at stereo bit rates of 16 to 320+ kbit/s and adaptive streaming.
+The Extended High Efficiency AAC codec is part of the fourth codec generation in the AAC codec family. It provides improved quality at mono bit rates of 6 to 320+ kbit/s and stereo bit rates of 12 to 320+ kbit/s together with adaptive streaming. In CBR mode bit rates are accepted in 1 kbit/s steps within these ranges; unsupported rates are rejected with a documented encoder error code.
 It also introduces mandatory loudness and dynamic range control with MPEG-D DRC for consistent playback loudness of live and file-based content.
 
 The addition of the new codec introduces the following AOSP media API keys for controlling its features:
