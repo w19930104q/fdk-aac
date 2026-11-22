@@ -1,7 +1,15 @@
 ACLOCAL_AMFLAGS = -I m4
 AUTOMAKE_OPTIONS = subdir-objects
 
+# Cross-platform numerical determinism (see
+# documentation/numerical-determinism.md): force the shared integer math
+# primitives so MS/IS/TNS decisions are independent of the SIMD path. Override
+# with e.g. `make AM_CPPFLAGS=-UFDK_BITEXACT` only when the arch fast path is
+# explicitly wanted.
+AM_CPPFLAGS = -DFDK_BITEXACT
+
 libfdk_aac_la_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
     -I$(top_srcdir)/cpp/libAACdec/include \
     -I$(top_srcdir)/cpp/libAACenc/include \
     -I$(top_srcdir)/cpp/libArithCoding/include \
@@ -17,6 +25,7 @@ libfdk_aac_la_CPPFLAGS = \
     -I$(top_srcdir)/cpp/libPCMutils/include
 
 libfdk_xhe_aac_la_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
     -I$(top_srcdir)/xhe-aac/aacfastenc/include \
     -I$(top_srcdir)/xhe-aac/applauseDetectionlib/include \
     -I$(top_srcdir)/xhe-aac/iisArithEncLib/include \

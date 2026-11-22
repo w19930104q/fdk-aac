@@ -62,6 +62,7 @@ include(CPack)
 
 option(BUILD_SHARED_LIBS "Build shared library" ON)
 option(BUILD_PROGRAMS "Build extra utilities" OFF)
+option(FDK_BITEXACT "Use platform-independent integer math so encoding decisions (MS/IS/TNS) and output bytes are identical across SIMD paths" ON)
 option(FDK_AAC_INSTALL_CMAKE_CONFIG_MODULE "Install CMake package configuration file" ON)
 option(FDK_AAC_INSTALL_PKGCONFIG_MODULE "Install pkg-config .pc file" ON)
 
@@ -783,6 +784,15 @@ add_library(FDK-AAC::fdk-aac ALIAS fdk-aac)
 add_library(fdk-xhe-aac ${libfdk_xhe_aac_SOURCES})
 add_library(FDK-XHE-AAC::fdk-xhe-aac ALIAS fdk-xhe-aac)
 
+### Cross-platform numerical determinism: define FDK_BITEXACT on every
+### translation unit so the x86 floating-point math overrides are compiled out
+### and MS/IS/TNS decisions only depend on the shared integer primitives.
+### Configure with -DFDK_BITEXACT=OFF to restore the architecture fast paths.
+if(FDK_BITEXACT)
+  target_compile_definitions(fdk-aac PUBLIC FDK_BITEXACT)
+  target_compile_definitions(fdk-xhe-aac PUBLIC FDK_BITEXACT)
+endif()
+
 ## Library target configuration
 
 ### Library target includes
@@ -1017,4 +1027,22 @@ if(BUILD_PROGRAMS)
 
   add_executable(test-encode-decode ${test_encode_decode_SOURCES})
   target_link_libraries(test-encode-decode PRIVATE fdk-aac)
+
+  # Cross-SIMD-path determinism acceptance test. Requires two independently
+  # configured build trees; pass them via -DFDK_TEST_BUILD_A/-DFDK_TEST_BUILD_B
+  # (e.g. an O3 build and an O0 generic-C build). The pinned SHA-256 and L/R
+  # energy ratios live in test/determinism/manifest.json.
+  enable_testing()
+  if(DEFINED FDK_TEST_BUILD_A AND DEFINED FDK_TEST_BUILD_B)
+    find_package(Python3 COMPONENTS Interpreter)
+    if(Python3_Interpreter_FOUND)
+      add_test(
+        NAME determinism
+        COMMAND ${Python3_EXECUTABLE}
+                ${CMAKE_CURRENT_SOURCE_DIR}/test/determinism/check_determinism.py
+                --build-a ${FDK_TEST_BUILD_A}
+                --build-b ${FDK_TEST_BUILD_B}
+                --samples ${CMAKE_CURRENT_SOURCE_DIR}/artifacts/samples)
+    endif()
+  endif()
 endif()

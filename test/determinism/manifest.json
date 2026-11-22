@@ -1,0 +1,128 @@
+{
+  "s01_near_mono-aot2-ab1-48000": {
+    "afterburner": 1,
+    "aot": 2,
+    "bitrate": 48000,
+    "decoded_lr_energy_ratio": 1.0,
+    "input_lr_energy_ratio": 1.00061,
+    "sha256": "6e6b7df0e75be19807dbaa2704a773b3c49dc8c28ccc991e000414d8a54652b2",
+    "wav": "s01_near_mono.wav"
+  },
+  "s02_antiphase-aot2-ab1-48000": {
+    "afterburner": 1,
+    "aot": 2,
+    "bitrate": 48000,
+    "decoded_lr_energy_ratio": 1.036237,
+    "input_lr_energy_ratio": 1.041237,
+    "sha256": "b744b0041fd7d776b24fc7c5c4f572c598cc4d12c7e9589c60c0dede91ceccb5",
+    "wav": "s02_antiphase.wav"
+  },
+  "s03_pan_sweep-aot2-ab1-48000": {
+    "afterburner": 1,
+    "aot": 2,
+    "bitrate": 48000,
+    "decoded_lr_energy_ratio": 1.020758,
+    "input_lr_energy_ratio": 0.999985,
+    "sha256": "78a8fd27b6db7b7fdd548a5f93faa3b9afa2f5e4ef568c9b34c62e595c7497b2",
+    "wav": "s03_pan_sweep.wav"
+  },
+  "s03_pan_sweep-aot2-ab1-96000": {
+    "afterburner": 1,
+    "aot": 2,
+    "bitrate": 96000,
+    "decoded_lr_energy_ratio": 1.020798,
+    "input_lr_energy_ratio": 0.999985,
+    "sha256": "15a0d4f8b8a22ce04f987c5390d3e7ee83593d9df1135b46f9f912f8d0d82242",
+    "wav": "s03_pan_sweep.wav"
+  },
+  "s03_pan_sweep-aot29-ab1-40000": {
+    "afterburner": 1,
+    "aot": 29,
+    "bitrate": 40000,
+    "decoded_lr_energy_ratio": 1.053112,
+    "input_lr_energy_ratio": 0.999985,
+    "sha256": "de1c482dbdc5538086658622c00767e7f84038c2285647d81a085d87dfa8869e",
+    "wav": "s03_pan_sweep.wav"
+  },
+  "s04_corr_noise-aot2-ab1-48000": {
+    "afterburner": 1,
+    "aot": 2,
+    "bitrate": 48000,
+    "decoded_lr_energy_ratio": 1.000098,
+    "input_lr_energy_ratio": 0.998608,
+    "sha256": "c59a748e6d05e84a98626303586d41fd89ef0bb172c20eb8abb473de9bf71c05",
+    "wav": "s04_corr_noise.wav"
+  },
+  "s04_corr_noise-aot29-ab1-32000": {
+    "afterburner": 1,
+    "aot": 29,
+    "bitrate": 32000,
+    "decoded_lr_energy_ratio": 1.004104,
+    "input_lr_energy_ratio": 0.998608,
+    "sha256": "32d758cfda8f5b6cad4690db04b19950699c700bebcca4c06549834909e044ed",
+    "wav": "s04_corr_noise.wav"
+  },
+  "s05_ratio_threshold-aot2-ab1-48000": {
+    "afterburner": 1,
+    "aot": 2,
+    "bitrate": 48000,
+    "decoded_lr_energy_ratio": 0.797743,
+    "input_lr_energy_ratio": 0.789838,
+    "sha256": "f45e4ae6d026af891ae012da4692ea8ad14657846325b2f156764915418ea26e",
+    "wav": "s05_ratio_threshold.wav"
+  },
+  "s05_ratio_threshold-aot2-ab1-96000": {
+    "afterburner": 1,
+    "aot": 2,
+    "bitrate": 96000,
+    "decoded_lr_energy_ratio": 0.790391,
+    "input_lr_energy_ratio": 0.789838,
+    "sha256": "9a6f3264aea5a9556e8318c427a00cd855fda9656c8eec99d99433e63ad1bb64",
+    "wav": "s05_ratio_threshold.wav"
+  },
+  "s06_tonal_transient-aot2-ab1-48000": {
+    "afterburner": 1,
+    "aot": 2,
+    "bitrate": 48000,
+    "decoded_lr_energy_ratio": 1.880174,
+    "input_lr_energy_ratio": 1.897715,
+    "sha256": "0f860c2f83d6e98bd8d8cac413839454bb230593cc4f0c80fc2f7a0c070124e7",
+    "wav": "s06_tonal_transient.wav"
+  },
+  "s07_lsb_dualmono-aot2-ab0-48000": {
+    "afterburner": 0,
+    "aot": 2,
+    "bitrate": 48000,
+    "decoded_lr_energy_ratio": 1.0,
+    "input_lr_energy_ratio": 1.0,
+    "sha256": "fc5a455f72e65801e7ba1612bd6843d528a26f51263ca9ee9234a79a6bb370fa",
+    "wav": "s07_lsb_dualmono.wav"
+  },
+  "s07_lsb_dualmono-aot2-ab1-48000": {
+    "afterburner": 1,
+    "aot": 2,
+    "bitrate": 48000,
+    "decoded_lr_energy_ratio": 1.0,
+    "input_lr_energy_ratio": 1.0,
+    "sha256": "9e3e2ceb499a40ba0e7e8954da51cb48e35676d045db7cc0168849c5592bec27",
+    "wav": "s07_lsb_dualmono.wav"
+  },
+  "s08_multisine-aot2-ab1-48000": {
+    "afterburner": 1,
+    "aot": 2,
+    "bitrate": 48000,
+    "decoded_lr_energy_ratio": 0.960029,
+    "input_lr_energy_ratio": 0.9679,
+    "sha256": "1693d5f52bf5acf808c6227db523f5f87ad15086b181ae5b2cac1e8684f920fd",
+    "wav": "s08_multisine.wav"
+  },
+  "s08_multisine-aot5-ab1-48000": {
+    "afterburner": 1,
+    "aot": 5,
+    "bitrate": 48000,
+    "decoded_lr_energy_ratio": 0.959818,
+    "input_lr_energy_ratio": 0.9679,
+    "sha256": "56917d741961aa8f8fa49442737cf2ccd7a0b4ba217c69176133dd3537015cc2",
+    "wav": "s08_multisine.wav"
+  }
+}

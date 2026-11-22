@@ -106,7 +106,7 @@ amm-info@iis.fraunhofer.de
 #if defined(__mips__)
 #include "mips/abs_mips.h"
 
-#elif defined(__x86__)
+#elif defined(__x86__) && !defined(FDK_BITEXACT)
 #include "x86/abs_x86.h"
 
 #endif /* all cores */

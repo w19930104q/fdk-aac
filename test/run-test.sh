@@ -24,12 +24,13 @@ fi
 ./test-encode-decode Sample01_4.wav | tee log-stereo.txt
 ./test-encode-decode Sample01_4-mono.wav | tee log-mono.txt
 
-ref_suffix=""
-case $(uname -m) in
-aarch64|arm64)
-    ref_suffix="-aarch64"
-    ;;
-esac
+# FDK_BITEXACT (the default build) makes all SIMD paths execute the same
+# integer primitives, so every architecture now shares one reference hash.
+# The legacy ref-*-aarch64.txt files are kept as identical copies for any
+# out-of-tree tooling that still references them.
+diff -u log-stereo.txt $(dirname $0)/ref-stereo.txt
+diff -u log-mono.txt $(dirname $0)/ref-mono.txt
 
-diff -u log-stereo.txt $(dirname $0)/ref-stereo${ref_suffix}.txt
-diff -u log-mono.txt $(dirname $0)/ref-mono${ref_suffix}.txt
+# The platform-specific copies must never drift from the shared reference.
+diff -u $(dirname $0)/ref-stereo.txt $(dirname $0)/ref-stereo-aarch64.txt
+diff -u $(dirname $0)/ref-mono.txt $(dirname $0)/ref-mono-aarch64.txt

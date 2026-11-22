@@ -144,7 +144,14 @@ inline INT fixmuldiv2_DD(INT a, const INT b) {
 
 /* #############################################################################
  */
-#elif (defined(__GNUC__) || defined(__gnu_linux__)) && defined(__x86__)
+#elif (defined(__GNUC__) || defined(__gnu_linux__)) && defined(__x86__) && \
+    !defined(__x86_64__)
+/*
+ * The register-constraint ("a"/"d") inline assembly below is 32-bit only; on
+ * x86-64 it does not compile, so 64-bit builds always use the generic INT64
+ * software fallback (see fixmul.h), which is bit-identical to these imul
+ * sequences.
+ */
 
 #define FUNCTION_fixmul_DD
 #define FUNCTION_fixmuldiv2_DD

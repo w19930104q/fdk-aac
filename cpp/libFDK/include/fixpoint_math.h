@@ -152,9 +152,20 @@ extern const FIXP_DBL invSqrtTab[SQRT_VALUES];
 
 /*
  * Hardware specific implementations
+ *
+ * Determinism policy (see documentation/numerical-determinism.md):
+ * The x86 implementations of sqrtFixp/invSqrtNorm2/invFixp/schur_div below are
+ * backed by single-precision libm calls (sqrtf/frexpf/ldexpf). Their rounded
+ * results differ from the integer table/Newton fallback and can change with the
+ * libm, compiler flags or SIMD rounding mode, which in turn flips MS/IS/TNS
+ * decisions on critical inputs and makes encoder output non-reproducible across
+ * platforms. When FDK_BITEXACT is defined (the default in the supplied build
+ * files) those overrides are skipped and every target uses the identical
+ * integer implementation. Configure the build with -DFDK_BITEXACT=OFF to opt
+ * back into the architecture-specific floating-point fast path.
  */
 
-#if defined(__x86__)
+#if defined(__x86__) && !defined(FDK_BITEXACT)
 #include "x86/fixpoint_math_x86.h"
 #endif /* target architecture selector */
 

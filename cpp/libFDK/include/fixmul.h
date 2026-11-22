@@ -106,13 +106,19 @@ amm-info@iis.fraunhofer.de
 #include "FDK_archdef.h"
 #include "machine_type.h"
 
+/*
+ * Architecture-specific multiply primitives. Under FDK_BITEXACT (default, see
+ * documentation/numerical-determinism.md) all targets use the identical
+ * software fallback (INT64 product with arithmetic shift), which is bit-for-bit
+ * the same operation the ARM smull and x86 imul intrinsics perform anyway.
+ */
 #if defined(__arm__)
 #include "arm/fixmul_arm.h"
 
 #elif defined(__mips__)
 #include "mips/fixmul_mips.h"
 
-#elif defined(__x86__)
+#elif defined(__x86__) && !defined(FDK_BITEXACT)
 #include "x86/fixmul_x86.h"
 
 #elif defined(__powerpc__)
