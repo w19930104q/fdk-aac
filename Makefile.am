@@ -64,6 +64,7 @@ fdk_aacincludedir = $(includedir)/fdk-aac
 fdk_aacinclude_HEADERS = \
     $(top_srcdir)/cpp/libSYS/include/machine_type.h \
     $(top_srcdir)/cpp/libSYS/include/genericStds.h \
+    $(top_srcdir)/cpp/libSYS/include/aac_frame_map.h \
     $(top_srcdir)/cpp/libSYS/include/FDK_audio.h \
     $(top_srcdir)/cpp/libSYS/include/syslib_channelMapDescr.h \
     $(top_srcdir)/cpp/libAACenc/include/aacenc_lib.h \
@@ -86,7 +87,7 @@ libfdk_xhe_aac_la_LDFLAGS = -version-info @FDK_XHE_AAC_VERSION@ -no-undefined \
 
 if EXAMPLE
 bin_PROGRAMS = aac-enc$(EXEEXT) aac-dec$(EXEEXT) xhe-aac-enc$(EXEEXT)
-noinst_PROGRAMS = test-encode-decode$(EXEEXT)
+noinst_PROGRAMS = test-encode-decode$(EXEEXT) test-frame-map$(EXEEXT)
 
 aac_enc_LDADD = libfdk-aac.la
 aac_enc_CPPFLAGS = $(libfdk_aac_la_CPPFLAGS) -I$(top_srcdir)/cpp
@@ -103,6 +104,10 @@ xhe_aac_enc_SOURCES = xhe-aac-enc.c wavreader.c
 test_encode_decode_LDADD = libfdk-aac.la
 test_encode_decode_CPPFLAGS = $(libfdk_aac_la_CPPFLAGS)
 test_encode_decode_SOURCES = test-encode-decode.c wavreader.c sha1.c
+
+test_frame_map_LDADD = libfdk-aac.la
+test_frame_map_CPPFLAGS = $(libfdk_aac_la_CPPFLAGS)
+test_frame_map_SOURCES = test-frame-map.c
 
 noinst_HEADERS = wavreader.h wavwriter.h
 endif
@@ -300,6 +305,7 @@ SBRENC_SRC = \
     cpp/libSBRenc/src/tran_det.cpp
 
 SYS_SRC = \
+    cpp/libSYS/src/aac_frame_map.cpp \
     cpp/libSYS/src/genericStds.cpp \
     cpp/libSYS/src/syslib_channelMapDescr.cpp
 

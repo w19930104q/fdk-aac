@@ -432,6 +432,7 @@ set(SBRENC_SRC
   libSBRenc/src/tran_det.h)
 
 set(SYS_SRC
+  libSYS/src/aac_frame_map.cpp
   libSYS/src/genericStds.cpp
   libSYS/src/syslib_channelMapDescr.cpp)
 
@@ -440,6 +441,7 @@ set(fdk_aacinclude_HEADERS
   libSYS/include/genericStds.h
   libSYS/include/FDK_audio.h
   libSYS/include/syslib_channelMapDescr.h
+  libSYS/include/aac_frame_map.h
   libAACenc/include/aacenc_lib.h
   libAACdec/include/aacdecoder_lib.h)
 
@@ -1017,4 +1019,8 @@ if(BUILD_PROGRAMS)
 
   add_executable(test-encode-decode ${test_encode_decode_SOURCES})
   target_link_libraries(test-encode-decode PRIVATE fdk-aac)
+
+  ## Test for the aac_frame_map per-frame metadata helper
+  add_executable(test-frame-map test-frame-map.c)
+  target_link_libraries(test-frame-map PRIVATE fdk-aac)
 endif()

@@ -17,3 +17,15 @@ EXPORTS
     aacEncOpen
     aacEncoder_GetParam
     aacEncoder_SetParam
+    aacFrameMap_Close
+    aacFrameMap_FeedSamples
+    aacFrameMap_Finalize
+    aacFrameMap_GetAotFrameLength
+    aacFrameMap_GetFrameLength
+    aacFrameMap_GetFramesMapped
+    aacFrameMap_GetInterval
+    aacFrameMap_GetSamplesFed
+    aacFrameMap_NextFrame
+    aacFrameMap_Open
+    aacFrameMap_OpenForDecoder
+    aacFrameMap_OpenForEncoder
